@@ -71,10 +71,11 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
     message += `📦 *RESUMO DO PEDIDO:*\n`;
     items.forEach((item) => {
+      const itemPrice = item.prices[0]?.price ?? 0;
       message += `- ${item.quantity}x ${item.name} (${new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
-      }).format(item.price)})\n`;
+      }).format(itemPrice)})\n`;
     });
     
     message += `----------------------------\n`;
@@ -140,7 +141,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="font-medium text-gray-900">
-                          {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(item.price * item.quantity)}
+                          {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format((item.prices[0]?.price ?? 0) * item.quantity)}
                         </span>
                         <button
                           type="button"

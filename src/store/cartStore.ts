@@ -1,7 +1,12 @@
 import { create } from 'zustand';
-import { Product } from '../data/menu';
+import { Product, PriceOption } from '../data/menu';
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: string;
+  name: string;
+  description: string;
+  prices: PriceOption[];
+  category: string;
   quantity: number;
 }
 
@@ -29,7 +34,15 @@ export const useCartStore = create<CartState>((set, get) => ({
           ),
         };
       }
-      return { items: [...state.items, { ...product, quantity: 1 }] };
+      const cartItem: CartItem = {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        prices: product.prices,
+        category: product.category,
+        quantity: 1,
+      };
+      return { items: [...state.items, cartItem] };
     });
   },
   removeItem: (productId) => {
@@ -56,6 +69,9 @@ export const useCartStore = create<CartState>((set, get) => ({
     return get().items.reduce((total, item) => total + item.quantity, 0);
   },
   getSubtotal: () => {
-    return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
+    return get().items.reduce(
+      (total, item) => total + (item.prices[0]?.price ?? 0) * item.quantity,
+      0
+    );
   },
 }));
